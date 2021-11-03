@@ -1,4 +1,9 @@
 from PyInquirer import prompt
+import csv
+
+from user import get_user, get_user_option
+
+
 
 expense_questions = [
     {
@@ -12,19 +17,30 @@ expense_questions = [
         "message":"New Expense - Label: ",
     },
     {
-        "type":"input",
-        "name":"spender",
+        "type":"list",
+        "name":"user",
         "message":"New Expense - Spender: ",
+        "choices": get_user
     },
-
+    {
+        'type': 'checkbox',
+        'qmark': '➡',
+        'message': 'Select all the spenders',
+        'name': 'allspenders',
+        "choices": get_user_option,
+    },
 ]
-
-
 
 def new_expense(*args):
     infos = prompt(expense_questions)
-    # Writing the informations on external file might be a good idea ¯\_(ツ)_/¯
+    try:
+        int(infos['amount']) 
+    except ValueError:
+        raise("This is not a number!")
+    with open('expense_report.csv', 'a') as f:
+    # create the csv writer
+        writer = csv.writer(f)
+    # write a row to the csv file
+        writer.writerow(infos.values())
     print("Expense Added !")
     return True
-
-
